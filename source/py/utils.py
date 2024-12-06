@@ -7,9 +7,15 @@ from zipfile import ZipFile
 from fontTools.ttLib import TTFont
 
 
-# run command
-def run(cli: str | list[str], extra_args: list[str] = []):
-    subprocess.run((cli.split(" ") if isinstance(cli, str) else cli) + extra_args)
+def run(command, extra_args=None, log=False):
+    """
+    Run a command line interface (CLI) command.
+    """
+    if extra_args is None:
+        extra_args = []
+    if isinstance(command, str):
+        command = command.split()
+    subprocess.run(command + extra_args, stdout=subprocess.DEVNULL if not log else None)
 
 
 def set_font_name(font: TTFont, name: str, id: int):

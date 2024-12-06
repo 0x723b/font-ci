@@ -33,6 +33,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       # - name: Checkout branch
       #   run: git checkout main
@@ -71,7 +72,7 @@ jobs:
             NOTES="--notes-from-tag"
           else
             echo "### Build arguments\n\n${{ github.event.inputs.build_args }}" >> _NOTES
-            echo "### Configuration\n\n```\n$(python release.py ${{ github.event.inputs.build_args }} --dry)\n```" >> _NOTES
+            echo "### Configuration\n\n```\n$(python build.py ${{ github.event.inputs.build_args }} --dry)\n```" >> _NOTES
             TAG="v$(date +%s)"
             FILES=fonts/archive/*.*
             STATUS=""

@@ -89,6 +89,7 @@ def parse_github_mirror(github_mirror: str) -> str:
 def download_zip_and_extract(
     name: str, url: str, zip_path: str, output_dir: str, remove_zip: bool = True
 ) -> bool:
+    not_ci = not is_ci()
     try:
         if not path.exists(zip_path):
             try:
@@ -109,10 +110,11 @@ def download_zip_and_extract(
                         downloaded_size += len(buffer)
 
                         percent_downloaded = (downloaded_size / total_size) * 100
-                        print(
-                            f"Downloading {name}: [{percent_downloaded:.2f}%] {downloaded_size} / {total_size}",
-                            end="\r",
-                        )
+                        if not_ci:
+                            print(
+                                f"Downloading {name}: [{percent_downloaded:.2f}%] {downloaded_size} / {total_size}",
+                                end="\r",
+                            )
             except Exception as e:
                 print(
                     f"\nFail to download {name}. Please download it manually from {url}, then put downloaded file into project's root and run this script again. \n    Error: {e}"

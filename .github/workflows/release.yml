@@ -25,9 +25,6 @@ jobs:
         cache: 'pip'
         cache-dependency-path: './requirements.txt'
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-
     - name: Create release directory
       run: mkdir -p release
 
@@ -37,6 +34,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
     - name: Run build script (hinted)
       run: |
@@ -61,6 +61,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
     - name: Run build script (hinted)
       run: |
         python build.py --archive --cn-both --normal --hinted --no-liga
@@ -84,6 +87,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
     - name: Run build script (hinted)
       run: |
         python build.py --archive --cn-both --no-normal --hinted --liga
@@ -106,6 +112,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
     - name: Run build script (hinted)
       run: |

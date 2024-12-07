@@ -68,7 +68,7 @@ jobs:
             git commit -m "Update woff2"
             git push
           else
-            build_args="${{ github.event.inputs.build_args }} --archive"
+            build_args="--archive"
             if [ ${{ github.event.inputs.cn }} ]; then
               build_args="$build_args --cn"
             fi
@@ -78,8 +78,11 @@ jobs:
             if [ ${{ github.event.inputs.no_liga }} ]; then
               build_args="$build_args --no-liga"
             fi
-            if [ ${{ github.event.inputs.feat }} ]; then
+            if [ -n ${{ github.event.inputs.feat }} ]; then
               build_args="$build_args --feat ${{ github.event.inputs.feat }}"
+            fi
+            if [ -n ${{ github.event.inputs.build_args }} ]; then
+              build_args="$build_args ${{ github.event.inputs.build_args }}"
             fi
             echo "BUILD_ARGS=$build_args" >> $GITHUB_ENV
             python build.py $build_args
@@ -92,7 +95,8 @@ jobs:
           else
             echo "### Build arguments" >> NOTES
             echo "$BUILD_ARGS" >> NOTES
-            CODE_BLOCK="```\n$(python build.py $BUILD_ARGS --dry)\n```"
+            CMD="python build.py $BUILD_ARGS --dry"
+            CODE_BLOCK="```\n$(eval $CMD)\n```"
             echo "### Configuration\n\n$CODE_BLOCK\n" >> _NOTES
             gh release create "v$(date +%s)" fonts/archive/*.* --notes-file NOTES
           fi

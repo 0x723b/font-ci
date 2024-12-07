@@ -78,10 +78,10 @@ jobs:
             if [ ${{ github.event.inputs.no_liga }} ]; then
               build_args="$build_args --no-liga"
             fi
-            if [ -n ${{ github.event.inputs.feat }} ]; then
+            if [ ${{ github.event.inputs.feat }} ]; then
               build_args="$build_args --feat ${{ github.event.inputs.feat }}"
             fi
-            if [ -n ${{ github.event.inputs.build_args }} ]; then
+            if [ ${{ github.event.inputs.build_args }} ]; then
               build_args="$build_args ${{ github.event.inputs.build_args }}"
             fi
             echo "BUILD_ARGS=$build_args" >> $GITHUB_ENV

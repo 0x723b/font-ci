@@ -39,7 +39,7 @@ jobs:
       #   run: git checkout main
 
       - name: Install ftcli
-        run: python -m pip install foundrytools-cli==1.1.22
+        run: pip install -r requirements.txt
 
       - name: Run release script
         run: |
@@ -64,18 +64,27 @@ jobs:
 
       - name: Create release
         run: |
-          echo "$TAG" >> NOTES
           if [ "${{ github.event_name }}" == "push" ]; then
             TAG=${{ github.ref_name }}
+            echo "$TAG" >> NOTES
             FILES=release/*.*
             STATUS="--draft"
             NOTES="--notes-from-tag"
           else
+            TAG="v$(date +%s)"
+            echo "$TAG" >> NOTES
             echo "### Build arguments\n\n${{ github.event.inputs.build_args }}" >> _NOTES
             echo "### Configuration\n\n```\n$(python build.py ${{ github.event.inputs.build_args }} --dry)\n```" >> _NOTES
-            TAG="v$(date +%s)"
             FILES=fonts/archive/*.*
             STATUS=""
             NOTES="--notes-file _NOTES"
           fi
-          gh release create $TAG $FILES --generate-notes --notes-file NOTES $STATUS --target variable
+          CMD="gh release create \"$TAG\" $FILES --generate-notes $NOTES $STATUS --target variable"
+
+          # Debug the command
+          echo "Executing command: $CMD"
+
+          # Execute the command
+          eval "$CMD"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

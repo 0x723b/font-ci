@@ -21,6 +21,11 @@ on:
         required: false
         default: false
         type: boolean
+      no_hinted:
+        description: 'Build unhinted font (add "--no-hinted" to build args)'
+        required: false
+        default: false
+        type: boolean
       feat:
         description: 'Enable features, split by "," (add "--feat feat1,feat2" to build args)'
         required: false
@@ -78,6 +83,9 @@ jobs:
             if [ "${{ github.event.inputs.no_liga }}" == "true" ]; then
               build_args="$build_args --no-liga"
             fi
+            if [ "${{ github.event.inputs.no_hinted }}" == "true" ]; then
+              build_args="$build_args --no-hinted"
+            fi
             if [ -n "${{ github.event.inputs.feat }}" ]; then
               build_args="$build_args --feat ${{ github.event.inputs.feat }}"
             fi
@@ -95,9 +103,9 @@ jobs:
           else
             echo "### Build arguments" >> NOTES
             echo "\`\`\`" >> NOTES
-            echo "python build $BUILD_ARGS" >> NOTES
+            echo "python build.py $BUILD_ARGS" >> NOTES
             echo "\`\`\`" >> NOTES
-            echo "### Configuration" >> _NOTES
+            echo "### Final Configuration" >> NOTES
             echo "\`\`\`" >> NOTES
             python build.py $BUILD_ARGS --dry >> NOTES
             echo "\`\`\`" >> NOTES

@@ -129,28 +129,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-        cache: 'pip'
-        cache-dependency-path: './requirements.txt'
-
     - name: Download release artifacts
       uses: actions/download-artifact@v4
       with:
         pattern: release-artifacts*
         path: release
 
-    - name: Generate variable woff2
-      run: |
-        tree release
-        ftcli converter ft2wf -out woff2/var -f woff2 fonts/variable
-        git config user.name 'github-actions[bot]'
-        git config user.email 'github-actions[bot]@users.noreply.github.com'
-        git add woff2
-        git commit -m "Update woff2"
-        git push
+    - name: Log artifacts tree
+      run: tree release
 
     - name: Release artifacts
       run: |
@@ -158,4 +144,4 @@ jobs:
         if [ -n "$TAG" ]; then
           TAG="vTmp$(date +%m)"
         fi
-        gh release create "${{ github.ref }}" release/*.* --generate-notes --notes-from-tag --draft
+        gh release create "${{ github.ref }}" release/**/*.* --generate-notes --notes-from-tag --draft

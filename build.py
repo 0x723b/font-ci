@@ -987,15 +987,17 @@ def main():
 
     def compress_folder(
         source_file_or_dir_path: str, target_parent_dir_path: str
-    ) -> str:
+    ) -> (str, str):
         """
         compress folder and return sha1
         """
         source_folder_name = path.basename(source_file_or_dir_path)
 
+        zip_file_name_without_ext = f"{font_config.family_name_compact}-{source_folder_name}{'-unhinted' if not font_config.use_hinted else ''}"
+
         zip_path = joinPaths(
             target_parent_dir_path,
-            f"{font_config.family_name_compact}-{source_folder_name}.zip",
+            f"{zip_file_name_without_ext}.zip",
         )
 
         with ZipFile(
@@ -1023,7 +1025,7 @@ def main():
                     break
                 sha256.update(data)
 
-        return sha256.hexdigest()
+        return sha256.hexdigest(), zip_file_name_without_ext
 
     if font_config.archive:
         print("\n🚀 archive files...\n")
@@ -1041,12 +1043,12 @@ def main():
             if should_use_cache and f not in ["CN", "NF", "NF-CN"]:
                 continue
 
-            sha256 = compress_folder(
+            sha256, zip_file_name_without_ext = compress_folder(
                 source_file_or_dir_path=joinPaths(build_option.output_dir, f),
                 target_parent_dir_path=archive_dir,
             )
             with open(
-                joinPaths(archive_dir, f"{font_config.family_name_compact}-{f}.sha256"),
+                joinPaths(archive_dir, f"{zip_file_name_without_ext}.sha256"),
                 "w",
                 encoding="utf-8",
             ) as hash_file:

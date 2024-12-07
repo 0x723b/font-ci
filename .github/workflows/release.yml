@@ -65,35 +65,28 @@ jobs:
             if [ ${{ github.event.inputs.feat }} ]; then
               build_args="$build_args --feat ${{ github.event.inputs.feat }}"
             fi
+            echo "BUILD_ARGS=$build_args" >> $GITHUB_ENV
             python build.py $build_args
           fi
 
       - name: Create release
         run: |
           if [ "${{ github.event_name }}" == "push" ]; then
-            TAG=${{ github.ref_name }}
-            echo "$TAG" >> NOTES
-            FILES=release/*.*
-            STATUS="--draft"
-            NOTES="--notes-from-tag"
+            gh release create "${{ github.ref_name }}" release/*.* --generate-notes --notes-from-tag --draft
           else
             TAG="v$(date +%s)"
             echo "$TAG" >> NOTES
-            echo "### Build arguments\n\n${{ github.event.inputs.build_args }}" >> _NOTES
-            echo "### Configuration\n\n```\n$(python build.py ${{ github.event.inputs.build_args }} --dry)\n```" >> _NOTES
-            FILES=fonts/archive/*.*
-            STATUS=""
-            NOTES="--notes-file _NOTES"
+            echo "" >> NOTES
+            echo "### Build arguments" >> NOTES
+            echo "" >> NOTES
+            echo "${{ github.event.inputs.build_args }}" >> NOTES
+            echo "" >> NOTES
+            echo "### Configuration" >> NOTES
+            echo "" >> NOTES
+            echo "```" >> NOTES
+            python build.py $BUILD_ARGS --dry >> NOTES
+            echo "```" >> NOTES
+            gh release create "$TAG" fonts/archive/*.* --generate-notes --notes-file NOTES
           fi
-          CMD="gh release create \"$TAG\" $FILES --generate-notes $NOTES $STATUS"
-
-          # Debug the command
-          echo "Executing command: $CMD"
-
-          ls -alF
-          tree ./fonts
-
-          # Execute the command
-          eval "$CMD"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

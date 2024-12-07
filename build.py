@@ -821,10 +821,10 @@ def main():
     build_option.load_cn_dir_and_suffix(font_config.should_cn_use_nerd_font())
 
     if parsed_args.dry:
-        print("parsed_args:", json.dumps(parsed_args.__dict__, indent=4))
         print("font_config:", json.dumps(font_config.__dict__, indent=4))
         if not is_ci():
             print("build_option:", json.dumps(build_option.__dict__, indent=4))
+            print("parsed_args:", json.dumps(parsed_args.__dict__, indent=4))
         return
 
     should_use_cache = parsed_args.cache

@@ -94,10 +94,13 @@ jobs:
             gh release create "${{ github.ref_name }}" release/*.* --generate-notes --notes-from-tag --draft
           else
             echo "### Build arguments" >> NOTES
-            echo "$BUILD_ARGS\n" >> NOTES
-            echo "### Configuration\n```" >> _NOTES
+            echo "\`\`\`" >> NOTES
+            echo "python build $BUILD_ARGS" >> NOTES
+            echo "\`\`\`" >> NOTES
+            echo "### Configuration" >> _NOTES
+            echo "\`\`\`" >> NOTES
             python build.py $BUILD_ARGS --dry >> NOTES
-            echo "```" >> NOTES
+            echo "\`\`\`" >> NOTES
             gh release create "v$(date +%s)" fonts/archive/*.* --notes-file NOTES
           fi
         env:

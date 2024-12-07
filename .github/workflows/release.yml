@@ -16,6 +16,11 @@ on:
         required: false
         default: false
         type: boolean
+      no_liga:
+        description: 'Remove ligatures (add "--no-liga" to build args)'
+        required: false
+        default: false
+        type: boolean
       feat:
         description: 'Enable features, split by "," (add "--feat feat1,feat2" to build args)'
         required: false
@@ -69,6 +74,9 @@ jobs:
             fi
             if [ ${{ github.event.inputs.normal }} ]; then
               build_args="$build_args --normal"
+            fi
+            if [ ${{ github.event.inputs.no_liga }} ]; then
+              build_args="$build_args --no-liga"
             fi
             if [ ${{ github.event.inputs.feat }} ]; then
               build_args="$build_args --feat ${{ github.event.inputs.feat }}"

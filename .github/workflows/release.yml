@@ -53,7 +53,7 @@ jobs:
     - name: Release artifacts
       run: |
         TAG="${{ github.ref_name }}"
-        if [ "${{ github.event_name }}" == "push" ]; then
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           TAG="v$(date +%s)"
         fi
 

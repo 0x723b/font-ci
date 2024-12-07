@@ -823,7 +823,8 @@ def main():
     if parsed_args.dry:
         print("parsed_args:", json.dumps(parsed_args.__dict__, indent=4))
         print("font_config:", json.dumps(font_config.__dict__, indent=4))
-        print("build_option:", json.dumps(build_option.__dict__, indent=4))
+        if not is_ci():
+            print("build_option:", json.dumps(build_option.__dict__, indent=4))
         return
 
     should_use_cache = parsed_args.cache

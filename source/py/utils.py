@@ -6,24 +6,24 @@ from urllib.request import Request, urlopen
 from zipfile import ZipFile
 from fontTools.ttLib import TTFont
 
+def is_ci():
+    ci_envs = [
+        "JENKINS_HOME",
+        "TRAVIS",
+        "CIRCLECI",
+        "GITHUB_ACTIONS",
+        "GITLAB_CI",
+        "TF_BUILD",
+    ]
 
-ci_envs = [
-    "JENKINS_HOME",
-    "TRAVIS",
-    "CIRCLECI",
-    "GITHUB_ACTIONS",
-    "GITLAB_CI",
-    "TF_BUILD",
-]
+    for env in ci_envs:
+        if environ.get(env):
+            return True
 
-is_local = True
-for env in ci_envs:
-    if environ.get(env):
-        is_local = False
-        break
+    return False
 
 
-def run(command, extra_args=None, log=is_local):
+def run(command, extra_args=None, log=not is_ci()):
     """
     Run a command line interface (CLI) command.
     """
@@ -106,7 +106,7 @@ def download_zip_and_extract(
 
                         out_file.write(buffer)
 
-                        if is_local:
+                        if not is_ci():
                             downloaded_size += len(buffer)
 
                             percent_downloaded = (downloaded_size / total_size) * 100

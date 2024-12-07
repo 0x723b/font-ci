@@ -95,8 +95,8 @@ jobs:
           else
             echo "### Build arguments" >> NOTES
             echo "$BUILD_ARGS" >> NOTES
-            CMD="python build.py $BUILD_ARGS --dry"
-            CODE_BLOCK="```\n$(eval $CMD)\n```"
+            echo "CONF=$(python build.py $BUILD_ARGS --dry)" >> $GITHUB_ENV
+            CODE_BLOCK="```\n$CONF\n```"
             echo "### Configuration\n\n$CODE_BLOCK\n" >> _NOTES
             gh release create "v$(date +%s)" fonts/archive/*.* --notes-file NOTES
           fi

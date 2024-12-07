@@ -7,7 +7,23 @@ from zipfile import ZipFile
 from fontTools.ttLib import TTFont
 
 
-def run(command, extra_args=None, log=False):
+ci_envs = [
+    "JENKINS_HOME",
+    "TRAVIS",
+    "CIRCLECI",
+    "GITHUB_ACTIONS",
+    "GITLAB_CI",
+    "TF_BUILD",
+]
+
+is_local = True
+for env in ci_envs:
+    if environ.get(env):
+        is_local = False
+        break
+
+
+def run(command, extra_args=None, log=is_local):
     """
     Run a command line interface (CLI) command.
     """
@@ -48,7 +64,7 @@ def get_font_forge_bin():
 
     system_name = platform.uname()[0]
 
-    result = ''
+    result = ""
     if "Darwin" in system_name:
         result = MAC_FONTFORGE_PATH
     elif "Windows" in system_name:
@@ -62,23 +78,6 @@ def get_font_forge_bin():
     return result
 
 
-def is_ci():
-    ci_envs = [
-        "JENKINS_HOME",
-        "TRAVIS",
-        "CIRCLECI",
-        "GITHUB_ACTIONS",
-        "GITLAB_CI",
-        "TF_BUILD",
-    ]
-
-    for env in ci_envs:
-        if environ.get(env):
-            return True
-
-    return False
-
-
 def parse_github_mirror(github_mirror: str) -> str:
     github = environ.get("GITHUB")  # custom github mirror, for CN users
     if not github:
@@ -89,7 +88,6 @@ def parse_github_mirror(github_mirror: str) -> str:
 def download_zip_and_extract(
     name: str, url: str, zip_path: str, output_dir: str, remove_zip: bool = True
 ) -> bool:
-    not_ci = not is_ci()
     try:
         if not path.exists(zip_path):
             try:
@@ -107,10 +105,11 @@ def download_zip_and_extract(
                             break
 
                         out_file.write(buffer)
-                        downloaded_size += len(buffer)
 
-                        percent_downloaded = (downloaded_size / total_size) * 100
-                        if not_ci:
+                        if is_local:
+                            downloaded_size += len(buffer)
+
+                            percent_downloaded = (downloaded_size / total_size) * 100
                             print(
                                 f"Downloading {name}: [{percent_downloaded:.2f}%] {downloaded_size} / {total_size}",
                                 end="\r",

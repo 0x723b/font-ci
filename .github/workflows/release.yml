@@ -21,6 +21,10 @@ on:
         required: false
         default: ''
         type: string
+
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -34,6 +38,8 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip'
+          cache-dependency-path: './requirements.txt'
+
 
       # - name: Checkout branch
       #   run: git checkout main
@@ -83,6 +89,9 @@ jobs:
 
           # Debug the command
           echo "Executing command: $CMD"
+
+          ls -alF
+          tree ./fonts
 
           # Execute the command
           eval "$CMD"

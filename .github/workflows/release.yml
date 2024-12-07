@@ -68,7 +68,6 @@ jobs:
 
   build-liga:
     runs-on: ubuntu-latest
-    needs: setup
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -97,7 +96,6 @@ jobs:
 
   build-no-liga:
     runs-on: ubuntu-latest
-    needs: setup
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4

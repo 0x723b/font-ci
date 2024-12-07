@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - v*
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -148,4 +149,8 @@ jobs:
 
     - name: Upload final release artifacts
       run: |
+        TAG="${{ github.ref }}"
+        if [ -n $TAG ] then
+          TAG="vTmp$(date +%m)"
+        fi
         gh release create "${{ github.ref }}" release/*.* --generate-notes --notes-from-tag --draft

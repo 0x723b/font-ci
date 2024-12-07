@@ -85,7 +85,7 @@ jobs:
             STATUS=""
             NOTES="--notes-file _NOTES"
           fi
-          CMD="gh release create \"$TAG\" $FILES --generate-notes $NOTES $STATUS --target variable"
+          CMD="gh release create \"$TAG\" $FILES --generate-notes $NOTES $STATUS"
 
           # Debug the command
           echo "Executing command: $CMD"
